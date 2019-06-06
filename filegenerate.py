@@ -2,6 +2,7 @@ import random as r
 import string as s
 lenval=['10','11','12','13','14','15','16','17','18','19','20']
 fp=open('sampledata.csv','w')
+fp.write('SN,Sequence,Class\n')
 for i in range (1,1001):
 	randstr=r.sample(s.ascii_letters,int(''.join(r.sample(lenval,1))))
 	strlen=len(randstr)
