@@ -1,7 +1,0 @@
-import time
-import os
-start=time.time()
-os.system('assignment1.py')
-
-
-print("time taken by your program is ",time.time()-start)
