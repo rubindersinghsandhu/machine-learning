@@ -1,0 +1,98 @@
+import random as r
+import string as s
+import os, sys, time, threading, multiprocessing
+
+numberOfCores=multiprocessing.cpu_count()
+fp=open('projectcopydata.csv','w')
+fp.write('Filesize,'+'C Time,'+'Cpp time,'+'Python time\n')
+def taskc(filename):
+	if filename.endswith(".txt"):
+		f = open(filename)
+		randstr=''.join(r.sample(s.ascii_letters,8))
+		ctime,cpptime,ptime=0,0,0
+		#Copying of file by c
+		starttime=time.time()
+		cmd='g++'+' '+"cppcopy.cpp"+' -o '+'hello'+randstr
+		os.system(cmd)
+		runcmd='hello'+randstr+' '+filename+' '+randstr+'.txt'
+		os.system(runcmd)
+		cpptime=time.time()-starttime
+		print("cpp program time ",cpptime)
+		statinfo=os.stat(filename)		
+		fp.write(str(statinfo.st_size)+','+str(ctime)+','+str(cpptime)+','+str(ptime)+'\n')
+	return
+def taskcpp(filename):
+	if filename.endswith(".txt"):
+		f = open(filename)
+		randstr=''.join(r.sample(s.ascii_letters,8))  
+		ctime,cpptime,ptime=0,0,0  
+		#Copying of file by cpp
+		starttime=time.time()
+		cmd='gcc'+' '+"ccopy.c"+' -o '+'hellocpp'+randstr
+		os.system(cmd)
+		runcmd='hellocpp'+randstr+' '+filename+' '+randstr+'.txt'
+		os.system(runcmd)
+		ctime=time.time()-starttime
+		print("c program time ",ctime)
+		statinfo=os.stat(filename)		
+		fp.write(str(statinfo.st_size)+','+str(ctime)+','+str(cpptime)+','+str(ptime)+'\n')
+	return
+def taskpy(filename):
+	if filename.endswith(".txt"):
+		f = open(filename)
+		randstr=''.join(r.sample(s.ascii_letters,8)) 
+		ctime,cpptime,ptime=0,0,0   
+		#Copying of file by python
+		starttime=time.time()
+		cmd='python '+'pycopy.py '+filename+' '+randstr+'.txt'
+		os.system(cmd)
+		ptime=time.time()-starttime
+		print("python program time ",ptime)
+		statinfo=os.stat(filename)
+		fp.write(str(statinfo.st_size)+','+str(ctime)+','+str(cpptime)+','+str(ptime)+'\n')
+	return
+
+# Run Multiple Thread
+
+for filename in os.listdir('D:\\computer\PROJECTS\\summer_2019\\randomfiles'):
+	filename='D:\\computer\PROJECTS\\summer_2019\\randomfiles\\'+filename
+	msg="...Thread of c for %s start...."%(filename)
+	print(msg)
+	t = threading.Thread(target=taskc , args=(filename,))
+	t.start()
+	while True:
+		if threading.activeCount()-1 <= numberOfCores:
+			break
+		time.sleep(1)
+	msg="...Thread of cpp for %s start...."%(filename)
+	print(msg)
+	cpp = threading.Thread(target=taskcpp , args=(filename,))
+	cpp.start()
+	while True:
+		if threading.activeCount()-1 <= numberOfCores:
+			break
+		time.sleep(1)
+	msg="...Thread of python for %s start...."%(filename)
+	print(msg)
+	py = threading.Thread(target=taskpy , args=(filename,))
+	py.start()
+	while True:
+		if threading.activeCount()-1 <= numberOfCores:
+			break
+		time.sleep(1)
+
+
+# Waiting to finish the thread
+while True:
+  if threading.activeCount() == 1:
+    break
+  time.sleep(1)
+  print ("Thread Left ... ",threading.activeCount() - 1)
+
+print("\n...All Thread ends....")
+
+
+
+
+
+	
